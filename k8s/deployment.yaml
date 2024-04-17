@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-js-app-config-map
+  namespace: default
+data:
+  DB_HOST: "mysql-1711549633.default.svc.cluster.local"
+  DB_NAME: "nodejsdb"
+  DB_USER: "root"
+  DB_PORT: "3306"
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: node-js-app-secret
+  namespace: default
+data:
+  DB_PASSWORD: "VGpLcEQ3aUk2WQ=="
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-js-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-js-app
+  template:
+    metadata:
+      labels:
+        app: node-js-app
+    spec:
+      containers:
+        - name: node-js-app
+          image: docker.io/sreekanthgaddoju/node-js-app:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: node-js-app-config-map
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: node-js-app-config-map
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: node-js-app-config-map
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: node-js-app-config-map
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: node-js-app-secret
+                  key: DB_PASSWORD
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-js-app
+spec:
+  selector:
+    app: node-js-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node-js-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
