@@ -8,6 +8,7 @@ gulp.task('copy-files', function() {
       'routes/**/*',
       'services/**/*',
       'config/**/*',
+      'logger.js',
       'package.json'
     ], { base: '.' })
     .pipe(gulp.dest('build'));

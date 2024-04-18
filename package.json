@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.19.2",
     "gulp": "^5.0.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "winston": "^3.13.0"
   }
 }

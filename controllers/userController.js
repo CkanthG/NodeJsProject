@@ -1,10 +1,11 @@
 const UserService = require('../services/userService');
+const logger = require("../logger.js").logger;
 
 class UserController {
-  static getAllUsers(req, res) {
-    UserService.getAllUsers((err, users) => {
+  static async getAllUsers(req, res) {
+    return await UserService.getAllUsers((err, users) => {
       if (err) {
-        console.error('Error retrieving users:', err);
+        logger.error('Error retrieving users:', err);
         res.status(500).json({ error: 'Internal server error' });
         return;
       }
@@ -12,11 +13,11 @@ class UserController {
     });
   }
 
-  static getUserById(req, res) {
+  static async getUserById(req, res) {
     const userId = req.params.id;
-    UserService.getUserById(userId, (err, user) => {
+    return await UserService.getUserById(userId, (err, user) => {
       if (err) {
-        console.error('Error retrieving users:', err);
+        logger.error('Error retrieving users:', err);
         res.status(500).json({ error: 'Internal server error' });
         return;
       }
@@ -24,12 +25,12 @@ class UserController {
       })
   }
 
-  static createUser(req, res) {
+  static async createUser(req, res) {
     const user = req.body;
-    console.log("user object > ",user);
-    UserService.createUser(user, (err, user) => {
+    logger.info("user object : " + JSON.stringify(user));
+    return await UserService.createUser(user, (err, user) => {
       if (err) {
-        console.error('Error creating user:', err);
+        logger.error('Error creating user:', err);
         res.status(500).json({ error: 'Internal server error' });
         return;
       }
@@ -37,12 +38,12 @@ class UserController {
       })
   }
 
-  static updateUser(req, res) {
+  static async updateUser(req, res) {
     const user = req.body;
     const userId = req.params.id;
-    UserService.updateUser(userId, user, (err, user) => {
+    return await UserService.updateUser(userId, user, (err, user) => {
       if (err) {
-        console.error('Error updating user:', err);
+        logger.error('Error updating user:', err);
         res.status(500).json({ error: 'Internal server error' });
         return;
       }
@@ -50,11 +51,11 @@ class UserController {
       })
   }
 
-  static deleteUser(req, res) {
+  static async deleteUser(req, res) {
     const userId = req.params.id;
-    UserService.deleteUser(userId, (err, result) => {
+    return await UserService.deleteUser(userId, (err, result) => {
       if (err) {
-        console.error('Error deleting user:', err);
+        logger.error('Error deleting user:', err);
         res.status(500).json({ error: 'Internal server error' });
         return;
       }
